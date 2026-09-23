@@ -6,6 +6,8 @@ It serves a simple password page. When the correct password is entered, the visi
 
 Useful when you want self-service temporary access without giving people permanent whitelist entries or full NPM credentials.
 
+![Preview](https://github.com/t-nician/npm-login-gate/blob/main/.img/preview.png)
+
 ## Features
 
 - Password-protected login page
