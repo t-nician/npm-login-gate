@@ -51,7 +51,10 @@ async def login_endpoint(body: LoginBody, request: Request):
 
 def launch():
     app = FastAPI(
-        lifespan=logic.lifespan
+        lifespan=logic.lifespan,
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
     )
 
     model.register_database(app)
