@@ -1,7 +1,7 @@
 import os
 import uvicorn
 
-from login_gate.server import create_app
+from login_gate_old.server import create_app
 
 
 def launch():

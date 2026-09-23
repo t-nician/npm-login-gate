@@ -2,8 +2,8 @@ import os
 import time
 
 LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
-LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS"))
-LOGIN_FAIL_TIMEOUT = int(os.getenv("LOGIN_FAIL_TIMEOUT"))
+LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS") or -1)
+LOGIN_FAIL_TIMEOUT = int(os.getenv("LOGIN_FAIL_TIMEOUT") or -1)
 
 from fastapi import FastAPI, Request
 from pydantic import BaseModel, Field
