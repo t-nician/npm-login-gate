@@ -50,7 +50,7 @@ async def whitelist_address(address: str):
 
 async def heartbeat():
     while True:
-        await asyncio.sleep(env.LOGIN_CLEAN_DATABASE_INTERVAL)
+        await asyncio.sleep(env.LOGIN_CHECK_DATABASE_INTERVAL)
         await npm_client.refresh_token()
         
         current_time = int(time.time())

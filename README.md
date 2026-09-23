@@ -45,10 +45,14 @@ pip install -r requirements.txt
 
 cp .env.example .env
 
+# Edit .env file.
+
 python src/main.py
 ```
 
 
+## Environment variables.
+⚠️ it is recommended to create a separate NPM account to manage the access list! ⚠️
 | Variable                                                     | Description                                                   |
 | ------------------------------------------------------------ | ------------------------------------------------------------- |
 | LOGIN_PAGE_HOST                                              | Bind address (default 0.0.0.0)                                |
@@ -62,6 +66,7 @@ python src/main.py
 | LOGIN_LIFETIME                                               | How long (hours) an IP stays on the access list               |
 | LOGIN_MAX_ATTEMPTS                                           | Failed attempts before a temporary timeout                    |
 | LOGIN_FAIL_TIMEOUT                                           | Timeout duration in minutes after too many failures           |
+| LOGIN_CHECK_DATABASE_INTERVAL | How often it will check the database for expired timeouts & whitelists.                      |
 | WEBHOOK_URL                                                  | Optional webhook URL (works with Discord)                     |
 | WEBHOOK_ON_SUCCESS / WEBHOOK_ON_FAILURE / WEBHOOK_ON_TIMEOUT | "true" / "false"                                              |
 | WEBHOOK_SUCCESS_MESSAGE etc.                                 | Message templates; {} is replaced with the IP                 |
