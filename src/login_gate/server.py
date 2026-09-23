@@ -1,15 +1,18 @@
 import os
-
+import time
 
 LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
-
+LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS"))
+LOGIN_FAIL_TIMEOUT = int(os.getenv("LOGIN_FAIL_TIMEOUT"))
 
 from fastapi import FastAPI, Request
 from pydantic import BaseModel, Field
 
 
 tracked_attempts = {}
-is_approved = {}
+timed_out_clients = {}
+
+approved_clients = {}
 
 
 class LoginBody(BaseModel):
@@ -20,7 +23,7 @@ class LoginBody(BaseModel):
     
 
 async def is_timed_out(ip: str):
-    return False
+    return timed_out_clients.get(ip) != None
 
 
 async def home_endpoint(request: Request):
@@ -45,7 +48,18 @@ async def login_endpoint(body: LoginBody, request: Request):
     if password == LOGIN_PASSWORD:
         pass
     else:
+        current_attempts = tracked_attempts.get(client_ip)
         
+        if not current_attempts:
+            tracked_attempts[client_ip] = 1
+        else:
+            tracked_attempts[client_ip] = tracked_attempts[client_ip] + 1
+        
+        if tracked_attempts[client_ip] >= LOGIN_MAX_ATTEMPTS:
+            timed_out_clients[client_ip] = int(time.time()) + LOGIN_FAIL_TIMEOUT * 60
+            return "You have been timed out!"
+        
+        return "Incorrect password!"
 
     return "Hello world!"
 
