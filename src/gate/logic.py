@@ -1,10 +1,10 @@
 import time
 import asyncio
 
-from gate import model, env
+from gate import model, npm, env
 from contextlib import asynccontextmanager
 
-
+npm_client = npm.NPMClient()
 cached_attempts: dict[str, int] = {}
 
 
@@ -39,36 +39,47 @@ async def timeout_address(address: str):
     )
 
 
-async def whitelist_address(address: str):
+async def whitelist_address(address: str):    
     await model.Whitelisted.create(
         address=address,
         unwhitelist_at=int(time.time()) + (env.LOGIN_LIFETIME * 3600)
     )
+    
+    print("npm_client adding")
+    await npm_client.add_address(address)
+    
 
 
 async def heartbeat():
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep(30)
+        await npm_client.refresh_token()
         
         current_time = int(time.time())
         
         for timedout in await model.Timedout.all():
             if timedout.untimeout_at <= current_time:
                 print(timedout.address, " timeout has been removed.")
+                
                 await timedout.delete()
         
         for whitelisted in await model.Whitelisted.all():
             if whitelisted.unwhitelist_at <= current_time:
                 print(whitelisted.address, " whitelist has been removed.")
+                
                 await whitelisted.delete()
+                await npm_client.remove_address(whitelisted.address)
 
 
 @asynccontextmanager
 async def lifespan(app):
+    await npm_client.login()
+    
     task = asyncio.create_task(heartbeat())
     
     yield
     
+    npm_client.session.close()
     task.cancel()
     
 

@@ -1,4 +1,3 @@
-import asyncio
 import uvicorn
 
 from gate import logic, model, env
