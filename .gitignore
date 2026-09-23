@@ -4,7 +4,7 @@ data/*.env
 *.sqlite3
 *.sqlite3-shm
 *.sqlite3-wal
-
+.vscode
 __pycache__/
 *.py[codz]
 *$py.class
