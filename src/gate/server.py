@@ -1,9 +1,17 @@
+import asyncio
 import uvicorn
 
 from gate import logic, model, env
 
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+
 from pydantic import BaseModel, Field
+
+
+index_page = ""
+with open("./src/index.html", "r") as file:
+    index_page = file.read()
 
 
 class LoginBody(BaseModel):
@@ -14,44 +22,42 @@ class LoginBody(BaseModel):
 
 
 async def home_endpoint(request: Request):
-    nginx_address = request.client.host
+    nginx_address = request.client.host    
     client_address = request.headers.get("x-real-ip")
     
-    if nginx_address != env.NGINX_HOST:
-        return "Wait a second... who are you?"
+    interrupt_message = await logic.gate(nginx_address, client_address)
     
-    if await logic.is_timed_out(client_address):
-        return "You are timed out!"
+    if interrupt_message:
+        return interrupt_message
     
-    if await logic.is_whitelisted(client_address):
-        return "You are already whitelisted!"
+    nginx_url = request.headers.get("host")
+    nginx_proto = request.headers.get("x-forwarded-proto")
     
-    # TODO make this return an HTML page.
-    return "Hello world!"
+    public_url = nginx_proto + "://" + nginx_url
+    
+    return index_page.replace("__ENDPOINT__", public_url)
 
 
 async def login_endpoint(body: LoginBody, request: Request):
     nginx_address = request.client.host
     client_address = request.headers.get("x-real-ip")
     
-    if nginx_address != env.NGINX_HOST:
-        return "Wait a second... who are you?"
-    
-    if await logic.is_timed_out(client_address):
-        return "You are timed out!"
+    interrupt_message = await logic.gate(nginx_address, client_address)
         
-    if await logic.is_whitelisted(client_address):
-        return "You are already whitelisted!"
+    if interrupt_message:
+        return interrupt_message
     
     return await logic.attempt_login(client_address, body.password)
 
 
 def launch():
-    app = FastAPI()
+    app = FastAPI(
+        lifespan=logic.lifespan
+    )
 
     model.register_database(app)
     
-    app.add_api_route("/", home_endpoint, methods=["GET"])
+    app.add_api_route("/", home_endpoint, methods=["GET"], response_class=HTMLResponse)
     app.add_api_route("/login", login_endpoint, methods=["POST"])
     
     uvicorn.run(
