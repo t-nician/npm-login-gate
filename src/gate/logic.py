@@ -45,10 +45,8 @@ async def whitelist_address(address: str):
         unwhitelist_at=int(time.time()) + (env.LOGIN_LIFETIME * 3600)
     )
     
-    print("npm_client adding")
     await npm_client.add_address(address)
     
-
 
 async def heartbeat():
     while True:
@@ -94,13 +92,15 @@ async def attempt_login(address: str, password: str):
             del cached_attempts[address]
             await timeout_address(address)
             
+            print(address, " has been timed out!")
+            
             return "You have been timed out!"
         
         return "Login attempt failed!"
     else:
         await whitelist_address(address)
         
-        # TODO setup nginx proxy manager update.
+        print(address, " has been whitelisted!")
         
         return "You have been whitelisted!"
     
