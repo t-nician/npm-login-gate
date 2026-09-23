@@ -1,7 +1,7 @@
 import time
 import asyncio
 
-from gate import model, npm, env
+from gate import webhook, model, npm, env
 from contextlib import asynccontextmanager
 
 npm_client = npm.NPMClient()
@@ -90,15 +90,22 @@ async def attempt_login(address: str, password: str):
         
         if cached_attempts[address] >= env.LOGIN_MAX_ATTEMPTS:
             del cached_attempts[address]
+            
             await timeout_address(address)
+            await webhook.on_timeout(address)
             
             print(address, " has been timed out!")
             
             return "You have been timed out!"
         
+        await webhook.on_failure(address)
+        
+        print(address, " failed to login!")
+        
         return "Login attempt failed!"
     else:
         await whitelist_address(address)
+        await webhook.on_success(address)
         
         print(address, " has been whitelisted!")
         
