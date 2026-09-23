@@ -50,7 +50,7 @@ async def whitelist_address(address: str):
 
 async def heartbeat():
     while True:
-        await asyncio.sleep(30)
+        await asyncio.sleep(15)
         await npm_client.refresh_token()
         
         current_time = int(time.time())
