@@ -27,9 +27,12 @@ class NPMClient:
         
     
     async def refresh_token(self):
-        response = await (await self.session.get(env.NPM_ENDPOINT_GET_TOKEN, headers={
-            "Authorization": "Bearer " + self.token
-        })).json()
+        response = await (await self.session.get(
+            env.NPM_ENDPOINT_GET_TOKEN, 
+            headers={
+                "Authorization": "Bearer " + self.token
+            }
+        )).json()
         
         self.token = response.get("token")
     
