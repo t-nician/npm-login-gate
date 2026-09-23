@@ -38,6 +38,8 @@ LOGIN_LIFETIME = int(os.getenv("LOGIN_LIFETIME"))
 LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS"))
 LOGIN_FAIL_TIMEOUT = int(os.getenv("LOGIN_FAIL_TIMEOUT"))
 
+LOGIN_CLEAN_DATABASE_INTERVAL = int(os.getenv("LOGIN_CLEAN_DATABASE_INTERVAL"))
+
 
 # Webhook configuration
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
