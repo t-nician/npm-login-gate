@@ -1,7 +1,7 @@
 # npm-login-gate
 
 
-![Preview](https://github.com/t-nician/npm-login-gate/blob/main/.img/preview.png)
+![Preview](https://github.com/t-nician/npm-login-gate/blob/main/.img/new-preview.png)
 
 
 A small Python web server that sits in front of services protected by [Nginx Proxy Manager](https://nginxproxymanager.com/) access lists.
