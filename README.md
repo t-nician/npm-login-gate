@@ -1,14 +1,13 @@
 # npm-login-gate
 
 
-![Preview](https://github.com/t-nician/npm-login-gate/blob/main/.img/new-preview.png)
-
-
 A small Python web server that sits in front of services protected by [Nginx Proxy Manager](https://nginxproxymanager.com/) access lists.
 
 It serves a simple password page. When the correct password is entered, the visitor’s IP is temporarily added to a chosen NPM access list. After a configurable lifetime the IP is removed again.
 
 Useful when you want self-service temporary access without giving people permanent whitelist entries or full NPM credentials.
+
+![Preview](https://github.com/t-nician/npm-login-gate/blob/main/.img/new-preview.png)
 
 ## Features
 
